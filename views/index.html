@@ -26,14 +26,12 @@
         // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
         resize: false,
         chunked:true,
-        auto:true,
-        threads:10,
-        formData:{
-            guid:WebUploader.Base.guid()
-        }
+        auto:false,
+        threads:10
     })
 
     uploader.on( 'fileQueued', function( file ) {
+
         $("#thelist").append( '<div id="' + file.id + '" class="item">' +
                 '<h4 class="info">' + file.name + '</h4>' +
                 '<p class="state">等待上传...</p>' +
@@ -41,6 +39,8 @@
     });
 
     $('#ctlBtn').on('click',function(){
+        console.log(uploader.getFiles())
+        uploader.option("formData",{fileid:WebUploader.Base.guid()})
         uploader.upload();
     });
 </script>
