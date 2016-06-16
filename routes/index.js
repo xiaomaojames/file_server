@@ -43,7 +43,7 @@ router.post('/upload', function (req, res, next) {
 
 
             filem.save(function (err11) {
-                fs.writeFile('temp.jpg', data)
+                //fs.writeFile('temp.jpg', data)
 
 
                 if (err11) {
@@ -55,16 +55,18 @@ router.post('/upload', function (req, res, next) {
 
                     });
                 }
-                res.send('ok');
+                res.send({
+                    state:"true",
+                    data:{fileid:filem.fileid}
+                });
             });
-            //console.log(filem);
 
         });
 
     });
 });
 
-router.get('/img_show/:id', function (req, res, next) {
+var download=function (req, res, next) {
     var fileid = req.params.id;
     filemodel.find({fileid: fileid}, function (err, wantfiles) {
         console.log(wantfiles.length);
@@ -93,6 +95,31 @@ router.get('/img_show/:id', function (req, res, next) {
 
     });
 
+}
+router.get('/download_img/:id',download);
+router.get('/download_file/:id',download);
+
+router.get('/GetFileDataById',function(req,res,next){
+    var fileid=req.query.fileid;
+    filemodel.findOne({fileid:fileid}).select("fileid size content_type filename").exec(function(err,filee){
+        res.send({
+            state:'true',
+            data:formateFile(filee)})
+    })
+
 })
+
+//filemode 格式转换
+var formateFile=function(old){
+    var newm={};
+    newm.file_id=old.fileid;
+    newm.name=old.filename;
+    newm.type=old.content_type;
+    newm.last_modify_time=old.last_modify_time ? old.last_modify_time:"";
+    newm.size=old.size;
+    newm.chunks=old.chunks;
+    newm.chunk=old.chunk;
+    return newm;
+}
 
 module.exports = router;

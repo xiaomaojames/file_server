@@ -6,7 +6,8 @@ var fileschema=mongoose.Schema({
     chunks:Number,
     chunk:Number,
     size:Number,
-    content_type:String
+    content_type:String,
+    last_modify_time:String
 })
 
 var filemodle=mongoose.model('filemodel',fileschema);
